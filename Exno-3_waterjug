@@ -1,0 +1,64 @@
+from collections import deque
+print ("192371068-D.Navadeep")
+def is_valid_state(x, y, cap_x, cap_y):
+    """Check if the current state (x, y) is valid."""
+    return 0 <= x <= cap_x and 0 <= y <= cap_y
+
+def get_successors(x, y, cap_x, cap_y):
+    """Generate all possible next states."""
+    successors = []
+    # Fill the 4-liter jug
+    successors.append((cap_x, y))
+    # Fill the 3-liter jug
+    successors.append((x, cap_y))
+    # Empty the 4-liter jug
+    successors.append((0, y))
+    # Empty the 3-liter jug
+    successors.append((x, 0))
+    # Pour water from 4-liter jug to 3-liter jug
+    pour_4_to_3 = min(x, cap_y - y)
+    successors.append((x - pour_4_to_3, y + pour_4_to_3))
+    # Pour water from 3-liter jug to 4-liter jug
+    pour_3_to_4 = min(y, cap_x - x)
+    successors.append((x + pour_3_to_4, y - pour_3_to_4))
+    return successors
+
+def bfs(cap_x, cap_y, goal):
+    """Breadth-First Search to find the shortest path to the goal."""
+    start = (0, 0)  # Start with both jugs empty
+    queue = deque([(start, [])])  # Queue stores (state, path)
+    visited = set([start])  # To avoid revisiting states
+
+    while queue:
+        (x, y), path = queue.popleft()
+        
+        # Check if we have reached the goal (4-liter jug has 2 liters)
+        if x == goal:
+            return path + [(x, y)]
+        
+        # Generate all possible valid next states
+        for next_state in get_successors(x, y, cap_x, cap_y):
+            if next_state not in visited:
+                visited.add(next_state)
+                queue.append((next_state, path + [(x, y)]))
+    
+    return None  # If no solution exists
+
+def print_solution(path):
+    """Print the sequence of steps."""
+    for i, state in enumerate(path):
+        print(f"Step {i}: Jug 1 = {state[0]}L, Jug 2 = {state[1]}L")
+
+# Set capacities and goal
+cap_x = 4  # Capacity of the 4-liter jug
+cap_y = 3  # Capacity of the 3-liter jug
+goal = 2   # The goal amount of water in the 4-liter jug
+
+# Run BFS to find the solution
+solution = bfs(cap_x, cap_y, goal)
+
+if solution:
+    print("Solution Steps to get 2 liters in the 4-liter jug:")
+    print_solution(solution)
+else:
+    print("No solution found.")
