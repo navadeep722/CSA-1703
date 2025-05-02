@@ -1,0 +1,29 @@
+def is_valid(state, country, color, neighbors):
+    return all(state.get(nei) != color for nei in neighbors[country])
+print("192371068-D.Navadeep")
+def csp(country_list, colors, neighbors, state={}):
+    if len(state) == len(country_list):
+        return state
+    country = [c for c in country_list if c not in state][0]
+    for color in colors:
+        if is_valid(state, country, color, neighbors):
+            result = csp(country_list, colors, neighbors, {**state, country: color})
+            if result:
+                return result
+    return None
+
+# Example
+countries = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+colors = ['Red', 'Green', 'Blue']
+neighbors = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW'],
+    'T': []
+}
+
+solution = csp(countries, colors, neighbors)
+print("Coloring:", solution)
