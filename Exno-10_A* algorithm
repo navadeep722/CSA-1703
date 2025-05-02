@@ -1,0 +1,36 @@
+import heapq
+print("192371068-D.Navadeep")
+def a_star(start, goal, graph, heuristic):
+    open_set = [(0 + heuristic[start], 0, start, [])]  # (f, g, node, path)
+    visited = set()
+
+    while open_set:
+        f, g, node, path = heapq.heappop(open_set)
+        if node in visited:
+            continue
+        visited.add(node)
+        path = path + [node]
+
+        if node == goal:
+            return path
+
+        for neighbor, cost in graph[node]:
+            if neighbor not in visited:
+                heapq.heappush(open_set, (g + cost + heuristic[neighbor], g + cost, neighbor, path))
+    return None
+
+# Example
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('D', 2), ('E', 5)],
+    'C': [('F', 3)],
+    'D': [('G', 1)],
+    'E': [('G', 2)],
+    'F': [('G', 1)],
+    'G': []
+}
+
+heuristic = {'A': 7, 'B': 6, 'C': 5, 'D': 4, 'E': 3, 'F': 2, 'G': 0}
+
+path = a_star('A', 'G', graph, heuristic)
+print("Path:", path)
