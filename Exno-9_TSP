@@ -1,0 +1,33 @@
+import sys
+from functools import lru_cache
+print("192371068-D.Navadeep")
+def tsp(distance_matrix):
+    n = len(distance_matrix)
+
+    @lru_cache(maxsize=None)
+    def visit(mask, pos):
+        # Base case: all cities visited
+        if mask == (1 << n) - 1:
+            return distance_matrix[pos][0]  # return to start
+
+        # Try all unvisited cities
+        min_cost = float('inf')
+        for city in range(n):
+            if (mask >> city) & 1 == 0:  # if city is unvisited
+                new_cost = distance_matrix[pos][city] + visit(mask | (1 << city), city)
+                min_cost = min(min_cost, new_cost)
+        return min_cost
+
+    return visit(1, 0)  # Start from city 0 with mask 000...1
+
+# Example usage:
+if __name__ == "__main__":
+    # Example distance matrix for 4 cities
+    dist = [
+        [0, 10, 15, 20],
+        [10, 0, 35, 25],
+        [15, 35, 0, 30],
+        [20, 25, 30, 0]
+    ]
+    result = tsp(dist)
+    print("Minimum TSP tour cost:", result)
