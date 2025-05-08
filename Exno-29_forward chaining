@@ -9,7 +9,7 @@ fact(workday).
 rule(go_beach) :- fact(sunny), \+ fact(workday).
 
 main :-
-    write('192311268 - P.Ganesh'), nl,
+    write('192371068- D.Navadeep'), nl,
     ( rule(go_beach) ->
         write('Forward chaining result: go_beach is TRUE'), nl
     ;
